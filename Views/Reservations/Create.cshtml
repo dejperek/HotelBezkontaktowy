@@ -1,0 +1,62 @@
+@model HotelBezkontaktowy.Models.ViewModels.ReservationCreateVM
+@{
+    ViewData["Title"] = "Nowa rezerwacja";
+    var room = ViewBag.Room as HotelBezkontaktowy.Models.Entities.Room;
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow mt-4">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0"><i class="bi bi-calendar-plus"></i> Rezerwacja pokoju @room?.RoomNumber</h4>
+                </div>
+                <div class="card-body">
+                    @if (room != null)
+                    {
+                        <div class="alert alert-light">
+                            <strong>Typ:</strong> @room.RoomType?.Name |
+                            <strong>Pojemnoœæ:</strong> @room.Capacity osób |
+                            <strong>Cena:</strong> @room.PricePerNight.ToString("C")/noc
+                        </div>
+                    }
+
+                    <form asp-action="Create" method="post">
+                        <input type="hidden" asp-for="RoomId" />
+                        <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label asp-for="DateFrom" class="form-label">Data zameldowania</label>
+                                <input asp-for="DateFrom" type="date" class="form-control" min="@DateTime.Today.AddDays(1).ToString("yyyy-MM-dd")" />
+                                <span asp-validation-for="DateFrom" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="DateTo" class="form-label">Data wymeldowania</label>
+                                <input asp-for="DateTo" type="date" class="form-control" min="@DateTime.Today.AddDays(2).ToString("yyyy-MM-dd")" />
+                                <span asp-validation-for="DateTo" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="GuestsCount" class="form-label">Liczba goœci</label>
+                            <input asp-for="GuestsCount" type="number" min="1" max="@room?.Capacity" class="form-control" />
+                            <span asp-validation-for="GuestsCount" class="text-danger"></span>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="bi bi-check-lg"></i> PotwierdŸ rezerwacjê
+                            </button>
+                            <a asp-controller="Rooms" asp-action="Index" class="btn btn-outline-secondary btn-lg">Anuluj</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,38 @@
+@{
+    ViewData["Title"] = "Dostêp bezkontaktowy";
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow mt-5">
+                <div class="card-header bg-primary text-white text-center">
+                    <h4 class="mb-0"><i class="bi bi-door-open"></i> Dostêp bezkontaktowy</h4>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted text-center">WprowadŸ token otrzymany po potwierdzeniu rezerwacji.</p>
+
+                    @if (ViewBag.Error != null)
+                    {
+                        <div class="alert alert-danger">
+                            <i class="bi bi-exclamation-triangle"></i> @ViewBag.Error
+                        </div>
+                    }
+
+                    <form method="get" asp-action="Access">
+                        <div class="mb-3">
+                            <label class="form-label">Token dostêpu</label>
+                            <input type="text" name="token" class="form-control form-control-lg text-center" 
+                                   placeholder="np. A1B2C3D4E5F6..." required />
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-unlock"></i> SprawdŸ rezerwacjê
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

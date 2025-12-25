@@ -1,0 +1,92 @@
+@model HotelBezkontaktowy.Models.Entities.Reservation
+@{
+    ViewData["Title"] = "Szczegó³y rezerwacji";
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow mt-4">
+                <div class="card-header bg-success text-white text-center">
+                    <h4 class="mb-0"><i class="bi bi-check-circle"></i> Twoja rezerwacja</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h5>Pokój</h5>
+                            <p class="display-6">@Model.Room?.RoomNumber</p>
+                            <span class="badge bg-info fs-6">@Model.Room?.RoomType?.Name</span>
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                            <h5>Status</h5>
+                            @{
+                                var statusClass = Model.Status switch
+                                {
+                                    HotelBezkontaktowy.Models.Entities.ReservationStatus.Pending => "bg-warning",
+                                    HotelBezkontaktowy.Models.Entities.ReservationStatus.Confirmed => "bg-primary",
+                                    HotelBezkontaktowy.Models.Entities.ReservationStatus.CheckedIn => "bg-success",
+                                    HotelBezkontaktowy.Models.Entities.ReservationStatus.Completed => "bg-secondary",
+                                    HotelBezkontaktowy.Models.Entities.ReservationStatus.Cancelled => "bg-danger",
+                                    _ => "bg-secondary"
+                                };
+                                var statusText = Model.Status switch
+                                {
+                                    HotelBezkontaktowy.Models.Entities.ReservationStatus.Pending => "Oczekuj¹ca",
+                                    HotelBezkontaktowy.Models.Entities.ReservationStatus.Confirmed => "Potwierdzona",
+                                    HotelBezkontaktowy.Models.Entities.ReservationStatus.CheckedIn => "Zameldowany",
+                                    HotelBezkontaktowy.Models.Entities.ReservationStatus.Completed => "Zakoñczona",
+                                    HotelBezkontaktowy.Models.Entities.ReservationStatus.Cancelled => "Anulowana",
+                                    _ => Model.Status.ToString()
+                                };
+                            }
+                            <span class="badge @statusClass fs-5">@statusText</span>
+                        </div>
+                    </div>
+
+                    <hr />
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <ul class="list-unstyled">
+                                <li class="mb-2">
+                                    <i class="bi bi-calendar-event text-primary"></i>
+                                    <strong>Zameldowanie:</strong> @Model.DateFrom.ToString("dd MMMM yyyy")
+                                </li>
+                                <li class="mb-2">
+                                    <i class="bi bi-calendar-x text-danger"></i>
+                                    <strong>Wymeldowanie:</strong> @Model.DateTo.ToString("dd MMMM yyyy")
+                                </li>
+                                <li class="mb-2">
+                                    <i class="bi bi-people text-info"></i>
+                                    <strong>Liczba goœci:</strong> @Model.GuestsCount
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card bg-light">
+                                <div class="card-body text-center">
+                                    <h6 class="text-muted">£¹czna cena</h6>
+                                    <p class="display-5 text-success mb-0">@Model.TotalPrice.ToString("C")</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    @if (Model.Status == HotelBezkontaktowy.Models.Entities.ReservationStatus.Confirmed)
+                    {
+                        <hr />
+                        <div class="alert alert-success text-center">
+                            <h5><i class="bi bi-door-open"></i> Mo¿esz siê zameldowaæ!</h5>
+                            <p class="mb-0">Twoja rezerwacja jest potwierdzona. U¿yj tego tokenu przy wejœciu do hotelu.</p>
+                        </div>
+                    }
+                </div>
+                <div class="card-footer text-center">
+                    <a asp-action="Access" class="btn btn-outline-primary">
+                        <i class="bi bi-arrow-left"></i> SprawdŸ inn¹ rezerwacjê
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

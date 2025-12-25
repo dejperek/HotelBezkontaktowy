@@ -1,0 +1,63 @@
+@model HotelBezkontaktowy.Models.Entities.Room
+@{
+    ViewData["Title"] = "Dodaj pokój";
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow mt-4">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0"><i class="bi bi-plus-lg"></i> Dodaj pokój</h4>
+                </div>
+                <div class="card-body">
+                    <form asp-action="CreateRoom" method="post">
+                        <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="RoomNumber" class="form-label">Numer pokoju</label>
+                            <input asp-for="RoomNumber" class="form-control" />
+                            <span asp-validation-for="RoomNumber" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="RoomTypeId" class="form-label">Typ pokoju</label>
+                            <select asp-for="RoomTypeId" asp-items="@ViewBag.RoomTypes" class="form-select">
+                                <option value="">-- Wybierz --</option>
+                            </select>
+                            <span asp-validation-for="RoomTypeId" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Capacity" class="form-label">Pojemnoœæ</label>
+                            <input asp-for="Capacity" type="number" min="1" max="20" class="form-control" />
+                            <span asp-validation-for="Capacity" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="PricePerNight" class="form-label">Cena za noc</label>
+                            <input asp-for="PricePerNight" type="number" step="0.01" class="form-control" />
+                            <span asp-validation-for="PricePerNight" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3 form-check">
+                            <input asp-for="IsActive" class="form-check-input" />
+                            <label asp-for="IsActive" class="form-check-label">Aktywny</label>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-success">
+                                <i class="bi bi-check-lg"></i> Zapisz
+                            </button>
+                            <a asp-action="Rooms" class="btn btn-outline-secondary">Anuluj</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

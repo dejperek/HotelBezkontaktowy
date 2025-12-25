@@ -1,0 +1,80 @@
+@model List<HotelBezkontaktowy.Models.ViewModels.RoomListItemVM>
+@{
+    ViewData["Title"] = "Zarz¹dzaj pokojami";
+}
+
+<div class="container">
+    <h2 class="mb-4"><i class="bi bi-door-closed"></i> Zarz¹dzaj pokojami</h2>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show">
+            @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="mb-3">
+        <a asp-action="CreateRoom" class="btn btn-success">
+            <i class="bi bi-plus-lg"></i> Dodaj pokój
+        </a>
+        <a asp-action="CreateRoomType" class="btn btn-outline-primary">
+            <i class="bi bi-tag"></i> Dodaj typ pokoju
+        </a>
+    </div>
+
+    @if (Model.Any())
+    {
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Numer</th>
+                        <th>Typ</th>
+                        <th>Pojemnoœæ</th>
+                        <th>Cena/noc</th>
+                        <th>Status</th>
+                        <th>Akcje</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var room in Model)
+                    {
+                        <tr class="@(room.IsActive ? "" : "table-secondary")">
+                            <td>@room.RoomNumber</td>
+                            <td><span class="badge bg-info">@room.RoomType</span></td>
+                            <td>@room.Capacity</td>
+                            <td>@room.PricePerNight.ToString("C")</td>
+                            <td>
+                                @if (room.IsActive)
+                                {
+                                    <span class="badge bg-success">Aktywny</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">Nieaktywny</span>
+                                }
+                            </td>
+                            <td>
+                                <a asp-action="EditRoom" asp-route-id="@room.Id" class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <form asp-action="DeleteRoom" method="post" class="d-inline"
+                                      onsubmit="return confirm('Czy na pewno chcesz usun¹æ ten pokój?');">
+                                    <input type="hidden" name="id" value="@room.Id" />
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">Brak pokojów w systemie.</div>
+    }
+</div>

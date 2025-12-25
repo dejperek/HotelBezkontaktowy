@@ -1,0 +1,74 @@
+@model List<HotelBezkontaktowy.Models.ViewModels.ReservationListItemVM>
+@using HotelBezkontaktowy.Models.Entities
+@{
+    ViewData["Title"] = "Zarz¹dzanie rezerwacjami";
+}
+
+<h2><i class="bi bi-calendar-check"></i> Zarz¹dzanie rezerwacjami</h2>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show">
+        @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Pokój</th>
+            <th>Typ</th>
+            <th>Od</th>
+            <th>Do</th>
+            <th>Goœcie</th>
+            <th>Cena</th>
+            <th>Status</th>
+            <th>Akcje</th>
+        </tr> 
+
+    </thead>
+    <tbody>
+        @foreach (var r in Model)
+        {
+            <tr>
+                <td>@r.Id</td>
+                <td>@r.RoomNumber</td>
+                <td>@r.RoomType</td>
+                <td>@r.DateFrom.ToShortDateString()</td>
+                <td>@r.DateTo.ToShortDateString()</td>
+                <td>@r.GuestsCount</td>
+                <td>@r.TotalPrice.ToString("C")</td>
+                <td>
+                    <span class="badge @(r.Status == "Confirmed" ? "bg-success" : r.Status == "Pending" ? "bg-warning" : "bg-secondary")">
+                        @r.Status
+                    </span>
+                </td>
+                <td>
+                    @if (r.Status == "Pending")
+                    {
+                        <form asp-action="ChangeStatus" method="post" class="d-inline">
+                            <input type="hidden" name="id" value="@r.Id" />
+                            <input type="hidden" name="status" value="@((int)ReservationStatus.Confirmed)" />
+                            <button type="submit" class="btn btn-success btn-sm">
+                                <i class="bi bi-check-lg"></i> PotwierdŸ
+                            </button>
+                        </form>
+                        <form asp-action="ChangeStatus" method="post" class="d-inline">
+                            <input type="hidden" name="id" value="@r.Id" />
+                            <input type="hidden" name="status" value="@((int)ReservationStatus.Cancelled)" />
+                            <button type="submit" class="btn btn-danger btn-sm">
+                                <i class="bi bi-x-lg"></i> Anuluj
+                            </button>
+                        </form>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a asp-action="Dashboard" class="btn btn-primary">
+    <i class="bi bi-arrow-left"></i> Wróæ do Dashboard
+</a>

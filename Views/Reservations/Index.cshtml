@@ -1,0 +1,108 @@
+@model List<HotelBezkontaktowy.Models.ViewModels.ReservationListItemVM>
+@{
+    ViewData["Title"] = "Moje rezerwacje";
+}
+
+<div class="container">
+    <h2 class="mb-4"><i class="bi bi-list-check"></i> Moje rezerwacje</h2>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show">
+            <i class="bi bi-check-circle"></i> @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (TempData["AccessToken"] != null)
+    {
+        <div class="alert alert-info alert-dismissible fade show">
+            <i class="bi bi-key"></i> <strong>Twój token dostêpu:</strong> <code>@TempData["AccessToken"]</code>
+            <br /><small>U¿yj tego tokenu na stronie <a asp-action="Access">Dostêp bezkontaktowy</a> aby uzyskaæ informacje o rezerwacji.</small>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (Model.Any())
+    {
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Pokój</th>
+                        <th>Typ</th>
+                        <th>Data od</th>
+                        <th>Data do</th>
+                        <th>Goœcie</th>
+                        <th>Status</th>
+                        <th>Cena</th>
+                        <th>Akcje</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var res in Model)
+                    {
+                        <tr>
+                            <td>@res.RoomNumber</td>
+                            <td><span class="badge bg-info">@res.RoomType</span></td>
+                            <td>@res.DateFrom.ToString("dd.MM.yyyy")</td>
+                            <td>@res.DateTo.ToString("dd.MM.yyyy")</td>
+                            <td>@res.GuestsCount</td>
+                            <td>
+                                @{
+                                    var statusClass = res.Status switch
+                                    {
+                                        "Pending" => "bg-warning",
+                                        "Confirmed" => "bg-primary",
+                                        "CheckedIn" => "bg-success",
+                                        "Completed" => "bg-secondary",
+                                        "Cancelled" => "bg-danger",
+                                        _ => "bg-secondary"
+                                    };
+                                    var statusText = res.Status switch
+                                    {
+                                        "Pending" => "Oczekuj¹ca",
+                                        "Confirmed" => "Potwierdzona",
+                                        "CheckedIn" => "Zameldowany",
+                                        "Completed" => "Zakoñczona",
+                                        "Cancelled" => "Anulowana",
+                                        _ => res.Status
+                                    };
+                                }
+                                <span class="badge @statusClass">@statusText</span>
+                            </td>
+                            <td>@res.TotalPrice.ToString("C")</td>
+                            <td>
+                                @if (res.Status == "Confirmed" || res.Status == "CheckedIn")
+                                {
+                                    <form asp-action="GenerateToken" method="post" class="d-inline">
+                                        <input type="hidden" name="id" value="@res.Id" />
+                                        <button type="submit" class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-key"></i> Token
+                                        </button>
+                                    </form>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle"></i> Nie masz jeszcze ¿adnych rezerwacji.
+            <a asp-controller="Rooms" asp-action="Index" class="alert-link">Przegl¹daj pokoje</a>
+        </div>
+    }
+
+    <div class="mt-4">
+        <a asp-controller="Rooms" asp-action="Index" class="btn btn-primary">
+            <i class="bi bi-plus-lg"></i> Nowa rezerwacja
+        </a>
+        <a asp-action="Access" class="btn btn-outline-secondary">
+            <i class="bi bi-door-open"></i> Dostêp bezkontaktowy
+        </a>
+    </div>
+</div>

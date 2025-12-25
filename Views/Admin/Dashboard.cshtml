@@ -1,0 +1,124 @@
+@model HotelBezkontaktowy.Models.ViewModels.AdminDashboardVM
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="container">
+    <h2 class="mb-4"><i class="bi bi-speedometer2"></i> Panel administracyjny</h2>
+
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card text-white bg-primary">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-calendar-month"></i> Ob³o¿enie (noce)</h5>
+                    <p class="display-4">@Model.MonthlyOccupancy.Sum(x => x.Nights)</p>
+                    <small>Ostatnie 6 miesiêcy</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-success">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-cash-stack"></i> Przychód</h5>
+                    <p class="display-4">@Model.Revenue.Sum(x => (double)x.TotalRevenue).ToString("C")</p>
+                    <small>Ostatnie 6 miesiêcy</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-info">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-star"></i> Top typ pokoju</h5>
+                    <p class="display-4">@(Model.TopRoomTypes.FirstOrDefault()?.RoomType ?? "-")</p>
+                    <small>Najwiêcej rezerwacji</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header"><i class="bi bi-bar-chart"></i> Ob³o¿enie miesiêczne</div>
+                <div class="card-body">
+                    @if (Model.MonthlyOccupancy.Any())
+                    {
+                        <table class="table table-sm">
+                            <thead>
+                                <tr><th>Miesi¹c</th><th>Noce</th></tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.MonthlyOccupancy)
+                                {
+                                    <tr>
+                                        <td>@item.Month/@item.Year</td>
+                                        <td>@item.Nights</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <p class="text-muted">Brak danych.</p>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header"><i class="bi bi-graph-up"></i> Przychód miesiêczny</div>
+                <div class="card-body">
+                    @if (Model.Revenue.Any())
+                    {
+                        <table class="table table-sm">
+                            <thead>
+                                <tr><th>Miesi¹c</th><th>Przychód</th></tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.Revenue)
+                                {
+                                    <tr>
+                                        <td>@item.Month/@item.Year</td>
+                                        <td>@item.TotalRevenue.ToString("C")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <p class="text-muted">Brak danych.</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header"><i class="bi bi-trophy"></i> Najpopularniejsze typy pokojów</div>
+        <div class="card-body">
+            @if (Model.TopRoomTypes.Any())
+            {
+                <table class="table table-sm">
+                    <thead>
+                        <tr><th>Typ</th><th>Liczba rezerwacji</th></tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.TopRoomTypes)
+                        {
+                            <tr>
+                                <td>@item.RoomType</td>
+                                <td>@item.ReservationsCount</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <p class="text-muted">Brak danych.</p>
+            }
+        </div>
+    </div>
+</div>
